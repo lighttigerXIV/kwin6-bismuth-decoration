@@ -6,8 +6,8 @@
 #include <QPainter>
 
 #include <KConfigGroup>
-#include <KDecoration2/DecoratedClient>
-#include <KDecoration2/DecorationSettings>
+#include <KDecoration3/DecoratedWindow>
+#include <KDecoration3/DecorationSettings>
 #include <KPluginFactory>
 #include <KSharedConfig>
 
@@ -16,7 +16,7 @@ K_PLUGIN_FACTORY_WITH_JSON(BismuthDecorationFactory, "metadata.json", registerPl
 namespace Bismuth
 {
 Decoration::Decoration(QObject *parent, const QVariantList &args)
-    : KDecoration2::Decoration(parent, args)
+    : KDecoration3::Decoration(parent, args)
 {
 }
 
@@ -31,7 +31,7 @@ bool Decoration::init()
     return true;
 }
 
-void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
+void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
 {
     if (!painter) {
         return;
@@ -42,7 +42,7 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
 
 void Decoration::paintBorders(QPainter &p)
 {
-    auto client = this->client();
+    auto client = this->window();
     auto windowRect = rect();
 
     p.save();
@@ -68,11 +68,11 @@ void Decoration::updateColors()
 
 void Decoration::setBorderSizes()
 {
-    const auto client = this->client();
+    const auto client = this->window();
 
-    const int left = (settings()->borderSize() == KDecoration2::BorderSize::NoSides) ? 0 : borderSize();
+    const int left = (settings()->borderSize() == KDecoration3::BorderSize::NoSides) ? 0 : borderSize();
     const int top = borderSize();
-    const int right = (settings()->borderSize() == KDecoration2::BorderSize::NoSides) ? 0 : borderSize();
+    const int right = (settings()->borderSize() == KDecoration3::BorderSize::NoSides) ? 0 : borderSize();
     const int bottom = borderSize();
 
     setBorders(QMargins(left, top, right, bottom));
@@ -80,14 +80,14 @@ void Decoration::setBorderSizes()
 
 void Decoration::connectEvents()
 {
-    auto clientPtr = this->client();
+    auto clientPtr = this->window();
     auto settingsPtr = settings().get();
 
     // No idea why regular connection does not work
-    connect(clientPtr, &KDecoration2::DecoratedClient::activeChanged, this, [this](bool value) {
+    connect(clientPtr, &KDecoration3::DecoratedWindow::activeChanged, this, [this](bool value) {
         this->update();
     });
-    connect(settingsPtr, &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::setBorderSizes);
+    connect(settingsPtr, &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::setBorderSizes);
 
     connect(m_kdeglobalsWatcher.data(), &KConfigWatcher::configChanged, this, [this](const KConfigGroup &group, const QByteArrayList &names) {
         if (group.name() == QStringLiteral("General")) {
@@ -103,22 +103,22 @@ int Decoration::borderSize() const
 {
     const int baseSize = settings()->smallSpacing();
     switch (settings()->borderSize()) {
-    case KDecoration2::BorderSize::Oversized:
+    case KDecoration3::BorderSize::Oversized:
         return baseSize * 10;
-    case KDecoration2::BorderSize::VeryHuge:
+    case KDecoration3::BorderSize::VeryHuge:
         return baseSize * 6;
-    case KDecoration2::BorderSize::Huge:
+    case KDecoration3::BorderSize::Huge:
         return baseSize * 5;
-    case KDecoration2::BorderSize::VeryLarge:
+    case KDecoration3::BorderSize::VeryLarge:
         return baseSize * 4;
-    case KDecoration2::BorderSize::NoSides:
-    case KDecoration2::BorderSize::Normal:
+    case KDecoration3::BorderSize::NoSides:
+    case KDecoration3::BorderSize::Normal:
         return baseSize * 2;
-    case KDecoration2::BorderSize::Large:
+    case KDecoration3::BorderSize::Large:
         return baseSize * 3;
-    case KDecoration2::BorderSize::None:
+    case KDecoration3::BorderSize::None:
         return 0;
-    case KDecoration2::BorderSize::Tiny:
+    case KDecoration3::BorderSize::Tiny:
     default:
         return baseSize;
     }

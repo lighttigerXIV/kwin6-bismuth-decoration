@@ -66,7 +66,7 @@ find_package(
              KCMUtils
              I18n)
 
-find_package(KDecoration2 REQUIRED)
+find_package(KDecoration3 REQUIRED)
 
 include_directories("${PROJECT_SOURCE_DIR}/external")
 
