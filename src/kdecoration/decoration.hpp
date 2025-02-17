@@ -6,11 +6,11 @@
 #include <QVariant>
 
 #include <KConfigWatcher>
-#include <KDecoration2/Decoration>
+#include <KDecoration3/Decoration>
 
 namespace Bismuth
 {
-class Decoration : public KDecoration2::Decoration
+class Decoration : public KDecoration3::Decoration
 {
     Q_OBJECT
 public:
@@ -21,7 +21,7 @@ public:
      *
      * The painter is set up to paint on an internal QPaintDevice. The painting is implicitly double buffered.
      */
-    void paint(QPainter *painter, const QRect &repaintRegion) override;
+    void paint(QPainter *painter, const QRectF &repaintRegion) override;
 
 public Q_SLOTS:
     /**
