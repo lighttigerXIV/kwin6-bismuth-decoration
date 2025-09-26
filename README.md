@@ -37,7 +37,7 @@ cd kwin6-bismuth-decoration
 mkdir build
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-make && make install
+make && sudo make install
 ```
 
 If you installed KDE Frameworks and Plasma into a different prefix,
